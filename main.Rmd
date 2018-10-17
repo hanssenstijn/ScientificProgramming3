@@ -77,3 +77,40 @@ mols = unlist(mols)
 # function generate smiels representation of IAtomContainer object
 smiles = lapply(mols,get.smiles)
 ```
+
+### Parallel version lapply: foreach 3 cores
+The data will be distributed among multiple cores in order to calculate the molecular descriptors. System time will be calculate for the reason that we want to compare the computation time beteween using 2 or 3 cores when calculating the descriptors. 
+```{r}
+# set total amount of cores that can be used
+nCores <- detectCores() - 1
+# set copies to run in parallel and communicate over the sockets
+cl <- makeCluster(nCores)     
+# clusterExport: that all cores in cluster have the variable available
+clusterExport(cl,"descNames") 
+clusterExport(cl,"smiles")
+# distribute the packages to each core
+clusterEvalQ(cl, pacman::p_load("parallel","rcdk","itertools","doParallel"))
+# make the process parallel
+registerDoParallel(cl)
+# results will be combined by row
+# eval.desc: evaluated the specified molecular descriptors for a molecule
+system.time(foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F))[3]    
+# close the created cluster
+stopImplicitCluster()
+
+```
+
+### Parallel version lapply: foreach 2 cores
+```{r}
+nCores <- detectCores() - 2
+cl <- makeCluster(nCores)     
+clusterExport(cl,"descNames") 
+clusterExport(cl,"smiles")
+clusterEvalQ(cl, pacman::p_load("parallel","rcdk","itertools","doParallel"))
+registerDoParallel(cl)
+system.time(foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F))[3]    
+stopImplicitCluster()
+
+```
+
+
