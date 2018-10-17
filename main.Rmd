@@ -81,22 +81,9 @@ smiles = lapply(mols,get.smiles)
 ### Run the discriptor calculation on one core
 
 ```{r}
-#result = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))
+elapsetime = list()
+elapsetime[time] = system.time({descriptors_oneCore = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))})[3]
 ```
-
-
-```{r}
-# set total amount of cores that can be used
-# nCores <- detectCores() - 1
-# set copies to run in parallel and communicate over the sockets
-# cl <- makeCluster(nCores)
-# parLapplyResult = dplyr::bind_rows(parLapply(cl,parse.smiles(unlist(smiles)),eval.desc,descNames))
-```
-
-```{r}
-#parallelResult = dplyr::bind_rows(mclapply(parse.smiles(unlist(smiles)),eval.desc,descNames,mc.cores = 1))
-```
-
 
 ### Parallel version lapply: foreach 3 cores
 The data will be distributed among multiple cores in order to calculate the molecular descriptors. System time will be calculate for the reason that we want to compare the computation time beteween using 2 or 3 cores when calculating the descriptors. 
@@ -114,7 +101,7 @@ clusterEvalQ(cl, pacman::p_load("parallel","rcdk","itertools","doParallel"))
 registerDoParallel(cl)
 # results will be combined by row
 # eval.desc: evaluated the specified molecular descriptors for a molecule
-foreachResults = foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F)    
+system.time({descriptors_threeCore = foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F)})[3]    
 # close the created cluster
 stopImplicitCluster()
 ```
@@ -127,9 +114,18 @@ clusterExport(cl,"descNames")
 clusterExport(cl,"smiles")
 clusterEvalQ(cl, pacman::p_load("parallel","rcdk","itertools","doParallel"))
 registerDoParallel(cl)
-system.time(foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F))[3]    
+system.time({descriptors_twoCore = foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F)})[3]
 stopImplicitCluster()
 
 ```
 
+### Threadsafe
+```{r}
+# set the rownames to numbers so the dataframes will have similar names
+rownames(descriptors_twoCore) <- c() 
+rownames(descriptors_threeCore) <- c()
+# test is there are differences between the dataframes.
+all.equal(descriptors_oneCore,descriptors_twoCore)
+all.equal(descriptors_oneCore,descriptors_threeCore)
+```
 
