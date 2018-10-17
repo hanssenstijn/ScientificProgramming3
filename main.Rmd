@@ -61,3 +61,11 @@ if(step == n){
 }
 close(pb)
 ```
+
+### List descriptors
+The list of descriptors wanted to calculate are depicted in this line of R-code
+```{r}
+# return the descriptor categories that are available
+descNames <- unique(unlist(sapply(get.desc.categories()[2:4], get.desc.names)))
+```
+
