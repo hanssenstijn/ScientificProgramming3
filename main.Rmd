@@ -32,3 +32,32 @@ if (!require("pacman")) suppressPackageStartupMessages(install.packages("pacman"
 # doParallel: provides parallel backend for the dopar function
 pacman::p_load("parallel","rcdk","itertools","doParallel")
 ```
+
+### Import data
+The `aid624202.sdf` will be loaded to compute the descriptor matrix. In the `while` loop an iteration will take place which will add the molecules one by one to the `mols` list. This will be done until the last molecule of the subset is submitted to `mols`.
+```{r}
+# total amount molecules in sdf file
+max_n_molecules = 377550
+# amount molecules imported
+n = 1000
+# iload.molecules: iterating version of loader
+iter <- iload.molecules('C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/parallelprocessing/aid624202.sdf', type='sdf')
+# text progress bar
+pb <- txtProgressBar(min = 0, max = n , style = 3)
+# initiate value
+step = 0 
+# set a list
+mols = list()
+# while loop to iterate until n is reached
+while(hasNext(iter)) {
+step = step + 1
+# generic function to prodcue values, save values in mols    
+    mols[[step]] <- nextElem(iter)
+setTxtProgressBar(pb,step)
+# break the iteration when the last molecules has been imported
+if(step == n){
+    break
+  }
+}
+close(pb)
+```
