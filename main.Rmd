@@ -79,10 +79,9 @@ smiles = lapply(mols,get.smiles)
 ```
 
 ### Run the discriptor calculation on one core
-
+The discriptor calculation will here be done without parallel computing to determine how much is to gained by doing parallel computing.
 ```{r}
-elapsetime = list()
-elapsetime[time] = system.time({descriptors_oneCore = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))})[3]
+system.time({descriptors_oneCore = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))})[3]
 ```
 
 ### Parallel version lapply: foreach 3 cores
@@ -120,6 +119,7 @@ stopImplicitCluster()
 ```
 
 ### Threadsafe
+The developed data frames will be compared in this section. In order to determine if parallel computing is thread safe on this dataset.
 ```{r}
 # set the rownames to numbers so the dataframes will have similar names
 rownames(descriptors_twoCore) <- c() 
