@@ -69,3 +69,11 @@ The list of descriptors wanted to calculate are depicted in this line of R-code
 descNames <- unique(unlist(sapply(get.desc.categories()[2:4], get.desc.names)))
 ```
 
+### Convert into smiles
+In order to make the parallel computing work, we converted the molecules into smiles. 
+```{r}
+# produce vector containing the atomic components
+mols = unlist(mols)
+# function generate smiels representation of IAtomContainer object
+smiles = lapply(mols,get.smiles)
+```
