@@ -39,7 +39,7 @@ The `aid624202.sdf` will be loaded to compute the descriptor matrix. In the `whi
 # total amount molecules in sdf file
 max_n_molecules = 377550
 # amount molecules imported
-n = 1000
+n = 100
 # iload.molecules: iterating version of loader
 iter <- iload.molecules('C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/parallelprocessing/aid624202.sdf', type='sdf')
 # text progress bar
@@ -78,6 +78,26 @@ mols = unlist(mols)
 smiles = lapply(mols,get.smiles)
 ```
 
+### Run the discriptor calculation on one core
+
+```{r}
+#result = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))
+```
+
+
+```{r}
+# set total amount of cores that can be used
+# nCores <- detectCores() - 1
+# set copies to run in parallel and communicate over the sockets
+# cl <- makeCluster(nCores)
+# parLapplyResult = dplyr::bind_rows(parLapply(cl,parse.smiles(unlist(smiles)),eval.desc,descNames))
+```
+
+```{r}
+#parallelResult = dplyr::bind_rows(mclapply(parse.smiles(unlist(smiles)),eval.desc,descNames,mc.cores = 1))
+```
+
+
 ### Parallel version lapply: foreach 3 cores
 The data will be distributed among multiple cores in order to calculate the molecular descriptors. System time will be calculate for the reason that we want to compare the computation time beteween using 2 or 3 cores when calculating the descriptors. 
 ```{r}
@@ -94,10 +114,9 @@ clusterEvalQ(cl, pacman::p_load("parallel","rcdk","itertools","doParallel"))
 registerDoParallel(cl)
 # results will be combined by row
 # eval.desc: evaluated the specified molecular descriptors for a molecule
-system.time(foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F))[3]    
+foreachResults = foreach(i=1:n,.combine=rbind) %dopar% eval.desc(parse.smiles(smiles[[i]]),descNames,verbose=F)    
 # close the created cluster
 stopImplicitCluster()
-
 ```
 
 ### Parallel version lapply: foreach 2 cores
