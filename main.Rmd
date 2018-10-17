@@ -1,18 +1,34 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Assignment 3: parallel computing"
+author: "Stijn Hanssen"
+date: "Oktober 2018"
+output: html_document
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
+### Clear working space
+First step is to make sure that the working space is empty.
 ```{r}
-plot(cars)
+# clear all variables
+rm(list=ls()) 
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+### Set path working directory
+The directory path is set to the stored dataset.
+```{r}
+# set working directory
+setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/parallelprocessing") 
+```
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
-
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+### Load packages
+Setting the size memory for the project and loading the required packages for specific functions. If the packaged aren't present they will be automatically be downloaded.
+```{r}
+# setting working memory for this job to 8gb
+options(java.parameters = "-Xmx8g")
+# install pacman
+if (!require("pacman")) suppressPackageStartupMessages(install.packages("pacman"))
+# p_load: instal and load the packages
+# ittertools: for proper nextElem support
+# rcdk: acces functioality of jave framework
+# doParallel: provides parallel backend for the dopar function
+pacman::p_load("parallel","rcdk","itertools","doParallel")
+```
