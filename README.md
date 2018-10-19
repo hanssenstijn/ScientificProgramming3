@@ -3,3 +3,6 @@
 
 The hosted compiled notebook can be found [here](https://hanssenstijn.github.io/ScientificProgramming3/main.nb.html). 
 In order to repdroduce the compiled notebook files can be downloaded from [github](https://github.com/hanssenstijn/ScientificProgramming3) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/bioassay/624202). The working directory has to be changed in the notebook. The working memory, subset number of molecules and the number of cores that are used can be adjusted to personal preferences in the notebook.
+
+The licenses for the used R packages can be founde here: [parallel & doParallel](https://cran.r-project.org/web/licenses/GPL-2), [rcdk](https://cran.r-project.org/web/licenses/LGPL-3) and
+[itertools](https://cran.r-project.org/web/licenses/GPL-2)
