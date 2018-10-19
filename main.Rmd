@@ -13,15 +13,15 @@ rm(list=ls())
 ```
 
 ### Load packages
-Setting the size memory for the project and loading the required packages for specific functions. If the packaged aren't present they will be automatically be downloaded.
+Setting the size memory for the project and loading the required packages for specific functions. If the packaged aren't present, they will be automatically be downloaded.
 ```{r}
 # setting working memory for this job to 8gb
 options(java.parameters = "-Xmx8g")
 # install pacman
 if (!require("pacman")) suppressPackageStartupMessages(install.packages("pacman"))
-# p_load: instal and load the packages
+# p_load: install and load the packages
 # ittertools: for proper nextElem support
-# rcdk: acces functioality of jave framework
+# rcdk: access functionality  of jave framework
 # doParallel: provides parallel backend for the dopar function
 pacman::p_load("parallel","rcdk","itertools","doParallel")
 ```
@@ -44,10 +44,10 @@ mols = list()
 # while loop to iterate until n is reached
 while(hasNext(iter)) {
 step = step + 1
-# generic function to prodcue values, save values in mols    
+# generic function to produce values, save values in mols    
     mols[[step]] <- nextElem(iter)
 setTxtProgressBar(pb,step)
-# break the iteration when the last molecules has been imported
+# break the iteration when the last molecule has been imported
 if(step == n){
     break
   }
@@ -67,18 +67,18 @@ In order to make the parallel computing work, we converted the molecules into sm
 ```{r}
 # produce vector containing the atomic components
 mols = unlist(mols)
-# function generate smiels representation of IAtomContainer object
+# function generate smiles representation of IAtomContainer object
 smiles = lapply(mols,get.smiles)
 ```
 
 ### Run the discriptor calculation on one core
-The discriptor calculation will here be done without parallel computing to determine how much is to gained by doing parallel computing.
+The descriptor calculation will here be done without parallel computing to determine how much is to gained by doing parallel computing.
 ```{r}
 system.time({descriptors_oneCore = dplyr::bind_rows(lapply(parse.smiles(unlist(smiles)),eval.desc,descNames))})[3]
 ```
 
 ### Parallel version lapply: foreach 3 cores
-The data will be distributed among multiple cores in order to calculate the molecular descriptors. System time will be calculate for the reason that we want to compare the computation time beteween using 2 or 3 cores when calculating the descriptors. 
+The data will be distributed among multiple cores in order to calculate the molecular descriptors. System time will be calculate for the reason that we want to compare the computation time bteween using 2 or 3 cores when calculating the descriptors.
 ```{r}
 # set total amount of cores that can be used
 nCores <- detectCores() - 1
@@ -111,13 +111,13 @@ stopImplicitCluster()
 
 ```
 
-### Threadsafe
+### Thread safe
 The developed data frames will be compared in this section. In order to determine if parallel computing is thread safe on this dataset.
 ```{r}
-# set the rownames to numbers so the dataframes will have similar names
+# set the rownames to numbers so the data frames will have similar names
 rownames(descriptors_twoCore) <- c() 
 rownames(descriptors_threeCore) <- c()
-# test is there are differences between the dataframes.
+# test is there are differences between the data frames
 all.equal(descriptors_oneCore,descriptors_twoCore)
 all.equal(descriptors_oneCore,descriptors_threeCore)
 ```
