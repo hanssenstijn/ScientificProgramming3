@@ -1,7 +1,7 @@
 ---
-title: "Assignment 3: parallel computing"
-author: "Stijn Hanssen"
-date: "Oktober 2018"
+title: Assignment 3 parallel computing
+author: Stijn Hanssen
+date: 19 Oktober 2018
 output: html_document
 ---
 
@@ -10,13 +10,6 @@ First step is to make sure that the working space is empty.
 ```{r}
 # clear all variables
 rm(list=ls()) 
-```
-
-### Set path working directory
-The directory path is set to the stored dataset.
-```{r}
-# set working directory
-setwd("C:/Users/stijn/Desktop/Master systems biology/Systems biology year 2/scientific computing/parallelprocessing") 
 ```
 
 ### Load packages
